@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import datetime,time
 from sklearn.covariance import EmpiricalCovariance, MinCovDet
+import bme280_
 
 class PiAnaloger():
   def __init__(self, mode = 0, streamsize = 200):
@@ -17,12 +18,12 @@ class PiAnaloger():
     self.streamcounter = 0
 
     try:
-      self.init_get_new_data()
+      self.init_get_data()
     except:
       pass
 
     try:
-      self.init_get_new_sample_data()
+      self.init_get_sample_data()
     except:
       pass
 
@@ -32,11 +33,13 @@ class PiAnaloger():
     self.streamcounter += 1
 
     if self.mode == 0:
-      new_data = self.get_new_sample_data()
+      data = self.get_sample_data()
     elif self.mode == 1:
-      new_data = self.get_new_data()
+      data = self.get_adc_data()
+    elif self.mode == 2:
+      data = self.get_bme_data()
 
-    self.streamlist.append(new_data)  
+    self.streamlist.append(data)  
     
     # print(self.streamcounter)
 
@@ -48,27 +51,36 @@ class PiAnaloger():
     self.fin_detect_error01()
 
 
-  def init_get_new_data(self):
+  def init_get_adc_data(self):
     pass
 
-  def get_new_data(self):
+  def get_adc_data(self):
     pass
 
 
-  def init_get_new_sample_data(self, filepath = "sample.csv"):
+  def init_get_sample_data(self, filepath = "sample.csv"):
     self.sample = pd.read_csv(filepath)
-    self.counter = 0
+    self.counter_sample = 0
     self.rowsize = len(self.sample)
 
 
-  def get_new_sample_data(self):
-    if self.counter >= self.rowsize:
-      self.counter = 0
+  def get_sample_data(self):
+    if self.counter_sample >= self.rowsize:
+      self.counter_sample = 0
 
-    data = self.sample.query("index ==" + str(int(self.counter)))
-    self.counter += 1
+    data = self.sample.query("index ==" + str(int(self.counter_sample)))
+    self.counter_sample += 1
 
     return np.hstack([[time.clock(),self.streamcounter],np.array(data).flatten()])
+
+
+
+  def init_get_bme_data(self):
+    self.counter_bme = 0
+
+  def get_bme_data(self):
+    self.counter_bme += 1
+    return np.hstack([[time.clock(),self.streamcounter],np.array(bme280_.getData()).flatten()])
 
 
   def init_detect_error01(self):
@@ -111,7 +123,7 @@ def get_input_status():
 
 def main():
 
-  PAL = PiAnaloger()
+  PAL = PiAnaloger(mode = 2)
 
   while True:
     status = get_input_status()
