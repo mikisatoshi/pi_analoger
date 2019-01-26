@@ -68,7 +68,7 @@ class PiAnaloger():
     values = [0]*4
     for i in range(4):
         # Read the specified ADC channel using the previously set gain value.
-        values[i] = adc.read_adc(i, gain=self.GAIN)
+        values[i] = self.adc.read_adc(i, gain=self.GAIN)
     return np.array(values)
 
 
