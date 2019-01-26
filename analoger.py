@@ -42,9 +42,7 @@ class PiAnaloger():
     if self.mode == 0:
       data = self.get_sample_data()
     elif self.mode == 1:
-      print("get_adc_data")
       data = self.get_adc_data()
-      print(data)
     elif self.mode == 2:
       data = self.get_bme_data()
 
@@ -119,7 +117,7 @@ class PiAnaloger():
       # print(np.array(self.streamlist)[-1,2:5])
       maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.ch_num].reshape(1,-1))
 
-      print(maha[0])
+      print("maha = " + str(maha[0]))
 
       self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
       # maha = emp_cov.mahalanobis(np.array(self.streamlist)[:,2:5])
