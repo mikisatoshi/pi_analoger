@@ -137,7 +137,7 @@ def get_input_status():
 
 def main():
 
-  PAL = PiAnaloger(mode = 2)
+  PAL = PiAnaloger(mode = 1)
 
   while True:
     status = get_input_status()
