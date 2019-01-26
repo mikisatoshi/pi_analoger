@@ -42,7 +42,9 @@ class PiAnaloger():
     if self.mode == 0:
       data = self.get_sample_data()
     elif self.mode == 1:
+      print("get_adc_data")
       data = self.get_adc_data()
+      print(data)
     elif self.mode == 2:
       data = self.get_bme_data()
 
