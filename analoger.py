@@ -16,6 +16,7 @@ class PiAnaloger():
     self.streamsize = streamsize
     self.streamlist = []
     self.streamcounter = 0
+    self.sleeptime =0.1
 
     try:
       self.init_get_data()
@@ -44,7 +45,8 @@ class PiAnaloger():
     elif self.mode == 2:
       data = self.get_bme_data()
 
-    self.streamlist.append(data)  
+    self.streamlist.append(data) 
+    time.sleep(self.sleeptime) 
     
     # print(self.streamcounter)
 
@@ -144,7 +146,7 @@ def main():
     status = get_input_status()
     if status == 0 :
       break
-    if i > 500:
+    if i > 200:
       break
 
   PAL.__fin__()
