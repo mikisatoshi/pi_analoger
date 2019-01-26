@@ -8,7 +8,7 @@ import bme280_
 import ADS1x15
 
 class PiAnaloger():
-  def __init__(self, mode = 0, streamsize = 50):
+  def __init__(self, mode = 0, streamsize = 100):
     """
     [mode] is key to swith getting sample data or getting loger data.
 
@@ -153,7 +153,7 @@ def main():
     status = get_input_status()
     if status == 0 :
       break
-    if i > 100:
+    if i > 500:
       break
 
   PAL.__fin__()
