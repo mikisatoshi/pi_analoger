@@ -20,7 +20,7 @@ class PiAnaloger():
     self.sleeptime =1
 
     try:
-      self.init_get_data()
+      self.init_get_adc_data()
     except:
       pass
 
