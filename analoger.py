@@ -17,7 +17,7 @@ class PiAnaloger():
     self.streamsize = streamsize
     self.streamlist = []
     self.streamcounter = 0
-    self.sleeptime =1
+    self.sleeptime =0
 
     try:
       self.init_get_adc_data()
