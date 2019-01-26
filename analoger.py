@@ -5,6 +5,7 @@ import pandas as pd
 import datetime,time
 from sklearn.covariance import EmpiricalCovariance, MinCovDet
 import bme280_
+import ADS1x15
 
 class PiAnaloger():
   def __init__(self, mode = 0, streamsize = 50):
@@ -59,10 +60,16 @@ class PiAnaloger():
 
 
   def init_get_adc_data(self):
-    pass
+    self.adc = ADS1x15.ADS1115()
+    self.counter_adc = 0
+    self.GAIN = 1
 
   def get_adc_data(self):
-    pass
+    values = [0]*4
+    for i in range(4):
+        # Read the specified ADC channel using the previously set gain value.
+        values[i] = adc.read_adc(i, gain=self.GAIN)
+    return np.array(values)
 
 
   def init_get_sample_data(self, filepath = "sample.csv"):
