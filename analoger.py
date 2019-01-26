@@ -6,7 +6,7 @@ import datetime,time
 from sklearn.covariance import EmpiricalCovariance, MinCovDet
 
 class PiAnaloger():
-  def __init__(self, *,mode = 0, streamsize = 200):
+  def __init__(self, mode = 0, streamsize = 200):
     """
     [mode] is key to swith getting sample data or getting loger data.
 
@@ -127,7 +127,7 @@ def main():
     status = get_input_status()
     if status == 0 :
       break
-    if i > 2000:
+    if i > 500:
       break
 
   PAL.__fin__()
