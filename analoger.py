@@ -1,31 +1,139 @@
 # -*- coding: utf-8 -*-
 import json
 import numpy as np
-import datetime
+import pandas as pd
+import datetime,time
+from sklearn.covariance import EmpiricalCovariance, MinCovDet
+
+class PiAnaloger():
+  def __init__(self, *,mode = 0, streamsize = 200):
+    """
+    [mode] is key to swith getting sample data or getting loger data.
+
+    """
+    self.mode = mode
+    self.streamsize = streamsize
+    self.streamlist = []
+    self.streamcounter = 0
+
+    try:
+      self.init_get_new_data()
+    except:
+      pass
+
+    try:
+      self.init_get_new_sample_data()
+    except:
+      pass
+
+    self.init_detect_error01()
+
+  def stream(self):
+    self.streamcounter += 1
+
+    if self.mode == 0:
+      new_data = self.get_new_sample_data()
+    elif self.mode == 1:
+      new_data = self.get_new_data()
+
+    self.streamlist.append(new_data)  
+    
+    # print(self.streamcounter)
+
+    if self.streamcounter > self.streamsize:
+      self.streamlist.pop(0)
+      self.detect_error01()
+
+  def __fin__(self):
+    self.fin_detect_error01()
 
 
-class PiLoger():
-  def __init__(self, ch = 8):
-    self.ch = ch
+  def init_get_new_data(self):
+    pass
 
-  def get_dummy_data(self):
+  def get_new_data(self):
+    pass
+
+
+  def init_get_new_sample_data(self, filepath = "sample.csv"):
+    self.sample = pd.read_csv(filepath)
+    self.counter = 0
+    self.rowsize = len(self.sample)
+
+
+  def get_new_sample_data(self):
+    if self.counter >= self.rowsize:
+      self.counter = 0
+
+    data = self.sample.query("index ==" + str(int(self.counter)))
+    self.counter += 1
+
+    return np.hstack([[time.clock(),self.streamcounter],np.array(data).flatten()])
+
+
+  def init_detect_error01(self):
+    self.timestep01 = 0.0001
+    self.lateststeptime = 0
+    self.counter01 = 0
+    self.ch_num = 3
+    self.log01 = []
+
+
+  def detect_error01(self):
+    if self.timestep01 < self.streamlist[-1][0] - self.lateststeptime:
+      self.counter01 += 1
+      self.lateststeptime = self.streamlist[-1][0]
+      # print("self.counter01       " + str(self.counter01).zfill(6))
+      # print("self.streamlist.size " + str(np.array(self.streamlist).shape))
+      print(self.streamlist[-1])
+
+      emp_cov = EmpiricalCovariance().fit(np.array(self.streamlist)[- int(self.streamsize / 2 ) : , 2 : 2+self.ch_num])
+      # print(np.array(self.streamlist)[-1,2:5])
+      maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.ch_num].reshape(1,-1))
+
+      print(maha[0])
+
+      self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
+      # maha = emp_cov.mahalanobis(np.array(self.streamlist)[:,2:5])
+      # print(maha)
+
+  def fin_detect_error01(self):
     dt_now = datetime.datetime.now()
-    value = dt_now.hour * 60 + dt_now.minute
-    values = ["-",str(datetime.datetime.now()), value, sin(value/100.0), cos(value/10.0), 9999 ,0 ,0, 0, 0, "test"]
-    # for i in range(100):
-    #   print(sin(i/100))
-    return values
+    np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.log01), delimiter=",")
+
+
+def get_input_status():
+  status = 1
+  print("status is "  + str(status).zfill(2))
+  return status
+
 
 
 def main():
 
-  PL = PiLoger()
-  print(PL.get_dummy_data())
+  PAL = PiAnaloger()
 
+  while True:
+    status = get_input_status()
+    if status != 0 :
+      break
+
+  i = 0
+
+  while True:
+    PAL.stream()
+    i +=1
+
+    status = get_input_status()
+    if status == 0 :
+      break
+    if i > 2000:
+      break
+
+  PAL.__fin__()
 
 
 if __name__ == '__main__':
-  try:
-    main()
-  except:
-    pass
+
+  main()
+
