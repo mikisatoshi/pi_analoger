@@ -7,7 +7,7 @@ from sklearn.covariance import EmpiricalCovariance, MinCovDet
 import bme280_
 
 class PiAnaloger():
-  def __init__(self, mode = 0, streamsize = 200):
+  def __init__(self, mode = 0, streamsize = 50):
     """
     [mode] is key to swith getting sample data or getting loger data.
 
@@ -16,7 +16,7 @@ class PiAnaloger():
     self.streamsize = streamsize
     self.streamlist = []
     self.streamcounter = 0
-    self.sleeptime =0.1
+    self.sleeptime =1
 
     try:
       self.init_get_data()
@@ -146,7 +146,7 @@ def main():
     status = get_input_status()
     if status == 0 :
       break
-    if i > 200:
+    if i > 100:
       break
 
   PAL.__fin__()
