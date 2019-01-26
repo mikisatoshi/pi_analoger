@@ -71,7 +71,7 @@ class PiAnaloger():
     for i in range(3):
         # Read the specified ADC channel using the previously set gain value.
         values[i] = self.adc.read_adc(i, gain=self.GAIN)
-    return np.array(values)
+    return np.hstack([[time.clock(),self.streamcounter],np.array(values).flatten()])
 
 
   def init_get_sample_data(self, filepath = "sample.csv"):
