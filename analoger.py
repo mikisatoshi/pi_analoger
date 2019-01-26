@@ -27,6 +27,11 @@ class PiAnaloger():
     except:
       pass
 
+    try:
+      self.init_get_bme_data()
+    except:
+      pass
+
     self.init_detect_error01()
 
   def stream(self):
