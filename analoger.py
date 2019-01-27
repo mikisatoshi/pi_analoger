@@ -3,7 +3,14 @@ import json,datetime,time,sys
 import numpy as np
 import pandas as pd
 from sklearn.covariance import EmpiricalCovariance, MinCovDet
-
+try:
+  import ADS1x15
+except:
+  pass
+try:
+  import bme280_
+except:
+  pass
 
 
 class PiAnaloger():
@@ -17,12 +24,6 @@ class PiAnaloger():
     self.streamlist = []
     self.streamcounter = 0
     self.sleeptime =0
-
-    if mode == 1:
-      import ADS1x15
-
-    elif mode == 2:
-      import bme280_
 
     try:
       self.init_get_adc_data()
