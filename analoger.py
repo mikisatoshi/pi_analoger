@@ -11,6 +11,10 @@ try:
   import bme280_
 except:
   pass
+try:
+  import RPi.GPIO as GPIO
+except:
+  pass 
 
 
 class PiAnaloger():
@@ -53,7 +57,7 @@ class PiAnaloger():
 
     if self.streamcounter > self.streamsize:
       self.streamlist.pop(0)
-      
+
       self.detect_error01()
 
   def __fin__(self):
@@ -129,10 +133,18 @@ class PiAnaloger():
     np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.log01), delimiter=",")
 
 
-def get_input_status00():
-  status = 1
-  # print("status is "  + str(status).zfill(2))
-  return status
+
+class Getstatus():
+  def __init__(self):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(21, GPIO.IN)
+
+
+  def get_input_status():
+    if GPIO.input(21) == GPIO.HIGH:
+      return 1
+    else:
+      return 0
 
 
 
@@ -155,9 +167,9 @@ def main():
 
 
   if 1 <= runmode and runmode <= 9: 
+    GS = Getstatus()
     while True:
-      status = get_input_status00()
-      if status != 0 :
+      if GS.get_input_status() != 0 :
         break
 
 ##== stream control ===============
@@ -175,7 +187,7 @@ def main():
 
   if 1 <= runmode and runmode <= 9: 
     while True:
-      if get_input_status00() == 0 :
+      if GS.get_input_status() == 0 :
         break
 
       PAL.stream()
