@@ -18,16 +18,24 @@ except:
 
 
 class PiAnaloger():
-  def __init__(self, mode = 0, streamsize = 100):
+  def __init__(self, mode = 0, para_path = "hoge"):
     """
     [mode] is key to swith getting sample data or getting loger data.
 
     """
+    try:
+      with open(para_path) as f:
+        self.p = json.load(f)
+    except:
+      self.p = {"streamsize"  :100,
+                "sleeptime"   :0,
+                "mintimestep" :0.0001,
+                "ch01"        :3
+                }
+
     self.mode = int(mode)
-    self.streamsize = streamsize
-    self.streamlist = []
+    self.streamlist    = []
     self.streamcounter = 0
-    self.sleeptime =0
 
     if self.mode == 0:
       self.init_get_sample_data()
@@ -51,11 +59,9 @@ class PiAnaloger():
       data = self.get_bme_data()
 
     self.streamlist.append(data) 
-    time.sleep(self.sleeptime) 
+    time.sleep(self.p["sleeptime"]) 
     
-    # print(self.streamcounter)
-
-    if self.streamcounter > self.streamsize:
+    if self.streamcounter > self.p["streamsize"]:
       self.streamlist.pop(0)
 
       self.detect_error01()
@@ -101,32 +107,23 @@ class PiAnaloger():
     self.counter_bme += 1
     return np.hstack([[time.clock(),self.streamcounter],np.array(bme280_.getData()).flatten()])
 
-
   def init_detect_error01(self):
-    self.timestep01 = 0.0001
     self.lateststeptime = 0
     self.counter01 = 0
-    self.ch_num = 3
     self.log01 = []
 
-
   def detect_error01(self):
-    if self.timestep01 < self.streamlist[-1][0] - self.lateststeptime:
+    if self.p["mintimestep"] < self.streamlist[-1][0] - self.lateststeptime:
       self.counter01 += 1
       self.lateststeptime = self.streamlist[-1][0]
-      # print("self.counter01       " + str(self.counter01).zfill(6))
-      # print("self.streamlist.size " + str(np.array(self.streamlist).shape))
       print(self.streamlist[-1])
 
-      emp_cov = EmpiricalCovariance().fit(np.array(self.streamlist)[- int(self.streamsize / 2 ) : , 2 : 2+self.ch_num])
-      # print(np.array(self.streamlist)[-1,2:5])
-      maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.ch_num].reshape(1,-1))
-
+      emp_cov = EmpiricalCovariance().fit(np.array(self.streamlist)[- int(self.p["streamsize"] / 2 ) : , 2 : 2+self.p["ch01"]])
+      maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.p["ch01"]].reshape(1,-1))
       print("maha = " + str(maha[0]))
 
       self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
-      # maha = emp_cov.mahalanobis(np.array(self.streamlist)[:,2:5])
-      # print(maha)
+
 
   def fin_detect_error01(self):
     dt_now = datetime.datetime.now()
@@ -157,7 +154,14 @@ def main():
   except:
     runmode = 0
 
-  PAL = PiAnaloger(mode = runmode)
+  try:
+    path = int(value[2])
+  except:
+    path = "./../para.json"
+
+  print(path)
+
+  PAL = PiAnaloger(mode = runmode, para_path = path )
 
 
 ##== wait triger sequence ===============
@@ -166,10 +170,10 @@ def main():
     pass
 
 
-  if 1 <= runmode and runmode <= 9: 
+  if 1 <= runmode and runmode <= 9:
     GS = Getstatus()
     while True:
-      if GS.get_input_status() != 0 :
+      if GS.get_input_status() != 0:
         break
 
 ##== stream control ===============

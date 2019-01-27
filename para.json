@@ -1,0 +1,6 @@
+{
+  "streamsize"  :100,
+  "sleeptime"   :0,
+  "mintimestep" :0.0001,
+  "ch01"        :3
+}
