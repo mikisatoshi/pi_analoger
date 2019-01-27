@@ -19,28 +19,22 @@ class PiAnaloger():
     [mode] is key to swith getting sample data or getting loger data.
 
     """
-    self.mode = mode
+    self.mode = int(mode)
     self.streamsize = streamsize
     self.streamlist = []
     self.streamcounter = 0
     self.sleeptime =0
 
-    try:
-      self.init_get_adc_data()
-    except:
-      pass
-
-    try:
+    if self.mode == 0:
       self.init_get_sample_data()
-    except:
-      pass
-
-    try:
+      self.init_detect_error01()
+    elif self.mode == 1:
+      self.init_get_adc_data()
+      self.init_detect_error01()
+    elif self.mode == 2:
       self.init_get_bme_data()
-    except:
-      pass
+      self.init_detect_error01()
 
-    self.init_detect_error01()
 
   def stream(self):
     self.streamcounter += 1
@@ -59,6 +53,7 @@ class PiAnaloger():
 
     if self.streamcounter > self.streamsize:
       self.streamlist.pop(0)
+      
       self.detect_error01()
 
   def __fin__(self):
