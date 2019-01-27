@@ -175,7 +175,7 @@ def main():
 
   if 1 <= runmode and runmode <= 9: 
     while True:
-      if get_input_status() == 0 :
+      if get_input_status00() == 0 :
         break
 
       PAL.stream()
