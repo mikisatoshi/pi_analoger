@@ -18,6 +18,12 @@ class PiAnaloger():
     self.streamcounter = 0
     self.sleeptime =0
 
+    if mode == 1:
+      import ADS1x15
+
+    elif mode == 2:
+      import bme280_
+
     try:
       self.init_get_adc_data()
     except:
@@ -59,7 +65,6 @@ class PiAnaloger():
 
 
   def init_get_adc_data(self):
-    import ADS1x15
     self.adc = ADS1x15.ADS1115()
     self.counter_adc = 0
     self.GAIN = 1
@@ -90,7 +95,6 @@ class PiAnaloger():
 
 
   def init_get_bme_data(self):
-    import bme280_
     self.counter_bme = 0
 
   def get_bme_data(self):
