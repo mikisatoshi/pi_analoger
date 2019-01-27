@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
+import json,datetime,time,sys
 import numpy as np
 import pandas as pd
-import datetime,time
 from sklearn.covariance import EmpiricalCovariance, MinCovDet
-import bme280_
-import ADS1x15
+
+
 
 class PiAnaloger():
   def __init__(self, mode = 0, streamsize = 100):
@@ -128,7 +127,7 @@ class PiAnaloger():
     np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.log01), delimiter=",")
 
 
-def get_input_status():
+def get_input_status00():
   status = 1
   # print("status is "  + str(status).zfill(2))
   return status
@@ -137,24 +136,50 @@ def get_input_status():
 
 def main():
 
-  PAL = PiAnaloger(mode = 1)
+  value = sys.argv
+  print(value)
+  try:
+    runmode = int(value[1])
+  except:
+    runmode = 0
 
-  while True:
-    status = get_input_status()
-    if status != 0 :
-      break
+  PAL = PiAnaloger(mode = runmode)
 
-  i = 0
 
-  while True:
-    PAL.stream()
-    i +=1
+##== wait triger sequence ===============
 
-    status = get_input_status()
-    if status == 0 :
-      break
-    if i > 500:
-      break
+  if runmode == 0 :
+    pass
+
+
+  if 1 <= runmode and runmode <= 9: 
+    import bme280_
+    import ADS1x15
+    while True:
+      status = get_input_status00()
+      if status != 0 :
+        break
+
+##== stream control ===============
+
+
+  if runmode == 0 :
+    i = 0
+    while True:
+      i += 1
+      if 500 < i:
+        break
+
+      PAL.stream()
+
+
+  if 1 <= runmode and runmode <= 9: 
+    while True:
+      if get_input_status() == 0 :
+        break
+
+      PAL.stream()
+
 
   PAL.__fin__()
 
