@@ -59,6 +59,7 @@ class PiAnaloger():
 
 
   def init_get_adc_data(self):
+    import ADS1x15
     self.adc = ADS1x15.ADS1115()
     self.counter_adc = 0
     self.GAIN = 1
@@ -89,6 +90,7 @@ class PiAnaloger():
 
 
   def init_get_bme_data(self):
+    import bme280_
     self.counter_bme = 0
 
   def get_bme_data(self):
@@ -153,8 +155,6 @@ def main():
 
 
   if 1 <= runmode and runmode <= 9: 
-    import bme280_
-    import ADS1x15
     while True:
       status = get_input_status00()
       if status != 0 :
