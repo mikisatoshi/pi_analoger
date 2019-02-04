@@ -172,6 +172,7 @@ def main():
 
 
   if 1 <= runmode and runmode <= 9:
+    time.sleep(0.1)
     GS = Getstatus()
     while True:
       if GS.get_input_status() != 0:
