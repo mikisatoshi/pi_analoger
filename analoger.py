@@ -138,6 +138,7 @@ class Getstatus():
 
 
   def get_input_status(self):
+    print(GPIO.input(21))
     if GPIO.input(21) == GPIO.HIGH:
       return 1
     else:
