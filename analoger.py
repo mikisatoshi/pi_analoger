@@ -134,12 +134,12 @@ class PiAnaloger():
 class Getstatus():
   def __init__(self):
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(21, GPIO.IN)
+    GPIO.setup(25, GPIO.IN)
 
 
   def get_input_status(self):
-    print(GPIO.input(21))
-    if GPIO.input(21) == GPIO.HIGH:
+    print(GPIO.input(25))
+    if GPIO.input(25) == GPIO.HIGH:
       return 1
     else:
       return 0
