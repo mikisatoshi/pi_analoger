@@ -15,7 +15,7 @@ try:
   import RPi.GPIO as GPIO
 except:
   pass 
-
+# log
 
 class PiAnaloger():
   def __init__(self, mode = 0, para_path = "hoge"):
