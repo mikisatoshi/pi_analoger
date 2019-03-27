@@ -100,13 +100,6 @@ class PiAnaloger():
 
 
 
-  def init_get_bme_data(self):
-    self.counter_bme = 0
-
-  def get_bme_data(self):
-    self.counter_bme += 1
-    return np.hstack([[time.clock(),self.streamcounter],np.array(bme280_.getData()).flatten()])
-
   def init_detect_error01(self):
     self.lateststeptime = 0
     self.counter01 = 0
