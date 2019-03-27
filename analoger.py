@@ -138,10 +138,10 @@ class Getstatus():
 
 
   def get_input_status(self):
-    print(GPIO.input(25))
     if GPIO.input(25) == GPIO.HIGH:
       return 1
     else:
+      print("Wait triger")
       return 0
 
 
