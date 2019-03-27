@@ -141,7 +141,7 @@ class Getstatus():
     if GPIO.input(25) == GPIO.HIGH:
       return 1
     else:
-      print("Wait triger")
+      print("  Wait triger  ")
       return 0
 
 
