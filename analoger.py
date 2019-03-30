@@ -91,6 +91,7 @@ class PiAnaloger():
 
   def detect_error01(self):
     if self.streamcounter > self.p["streamsize"]:
+      pass
 
     if self.p["mintimestep"] < self.streamlist[-1][0] - self.lateststeptime:
       self.counter01 += 1
