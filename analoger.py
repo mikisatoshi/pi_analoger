@@ -43,9 +43,6 @@ class PiAnaloger():
     elif self.mode == 1:
       self.init_get_adc_data()
       self.init_detect_error01()
-    elif self.mode == 2:
-      self.init_get_bme_data()
-      self.init_detect_error01()
 
 
   def stream(self):
@@ -55,8 +52,6 @@ class PiAnaloger():
       data = self.get_sample_data()
     elif self.mode == 1:
       data = self.get_adc_data()
-    elif self.mode == 2:
-      data = self.get_bme_data()
 
     self.streamlist.append(data) 
     time.sleep(self.p["sleeptime"]) 
@@ -98,14 +93,6 @@ class PiAnaloger():
 
     return np.hstack([[time.clock(),self.streamcounter],np.array(data).flatten()])
 
-
-
-  def init_get_bme_data(self):
-    self.counter_bme = 0
-
-  def get_bme_data(self):
-    self.counter_bme += 1
-    return np.hstack([[time.clock(),self.streamcounter],np.array(bme280_.getData()).flatten()])
 
   def init_detect_error01(self):
     self.lateststeptime = 0
