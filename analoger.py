@@ -51,12 +51,12 @@ class PiAnaloger():
     data = np.hstack([data,[-1,0]])
     self.streamlist.append(data) 
     
-    try:
-      self.detect_error01()
-    except:
-      pass
+    # try:
+    #   self.detect_error01()
+    # except:
+    #   pass
 
- def __fin__(self):
+  def __fin__(self):
     dt_now = datetime.datetime.now()
     np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.streamlist), delimiter=",")
 
