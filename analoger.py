@@ -36,7 +36,7 @@ class PiAnaloger():
 
     if self.mode == 0:
       self.init_get_sample_data()
-    elif self.mode == 1:
+    elif 1 <= self.mode and self.mode <= 9:
       self.init_get_adc_data()
 
 
