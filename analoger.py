@@ -36,10 +36,8 @@ class PiAnaloger():
 
     if self.mode == 0:
       self.init_get_sample_data()
-      self.init_detect_error01()
     elif self.mode == 1:
       self.init_get_adc_data()
-      self.init_detect_error01()
 
 
   def stream(self):
@@ -48,19 +46,19 @@ class PiAnaloger():
     if self.mode == 0:
       data = self.get_sample_data()
     elif self.mode == 1:
-      data = self.get_adc_data()
+      data = np.hstack([[time.clock(),self.streamcounter],self.get_adc_data()])
 
+    data = np.hstack([data,[-1,0]])
     self.streamlist.append(data) 
-    time.sleep(self.p["sleeptime"]) 
     
-    if self.streamcounter > self.p["streamsize"]:
-      self.streamlist.pop(0)
-
+    try:
       self.detect_error01()
+    except:
+      pass
 
-  def __fin__(self):
-    self.fin_detect_error01()
-
+ def __fin__(self):
+    dt_now = datetime.datetime.now()
+    np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.streamlist), delimiter=",")
 
   def init_get_adc_data(self):
     self.adc = ADS1x15.ADS1115()
@@ -72,7 +70,7 @@ class PiAnaloger():
     for i in range(4):
         # Read the specified ADC channel using the previously set gain value.
         values[i] = self.adc.read_adc(i, gain=self.GAIN)
-    return np.hstack([[time.clock(),self.streamcounter],np.array(values).flatten()])
+    return np.array(values).flatten()
 
 
   def init_get_sample_data(self, filepath = "sample.csv"):
@@ -91,12 +89,9 @@ class PiAnaloger():
     return np.hstack([[time.clock(),self.streamcounter],np.array(data).flatten()])
 
 
-  def init_detect_error01(self):
-    self.lateststeptime = 0
-    self.counter01 = 0
-    self.log01 = []
-
   def detect_error01(self):
+    if self.streamcounter > self.p["streamsize"]:
+
     if self.p["mintimestep"] < self.streamlist[-1][0] - self.lateststeptime:
       self.counter01 += 1
       self.lateststeptime = self.streamlist[-1][0]
@@ -109,10 +104,7 @@ class PiAnaloger():
       self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
 
 
-  def fin_detect_error01(self):
-    dt_now = datetime.datetime.now()
-    np.savetxt("./../storage/log01_" +str(datetime.date.today()) + '_' + str(dt_now.hour).zfill(2) +"-"+ str(dt_now.minute).zfill(2) +"-"+ str(dt_now.second).zfill(2) + ".csv", np.array(self.log01), delimiter=",")
-
+ 
 
 
 class Getstatus():
