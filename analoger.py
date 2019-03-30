@@ -32,7 +32,7 @@ class PiAnaloger():
 
     self.mode = int(mode)
     self.streamlist    = []
-    self.streamcounter = 1
+    self.streamcounter = 0
 
     if self.mode == 0:
       self.init_get_sample_data()
@@ -67,8 +67,8 @@ class PiAnaloger():
     self.GAIN = 1
 
   def get_adc_data(self):
-    values = [0]*4
-    for i in range(4):
+    values = [0]*1
+    for i in range(1):
         # Read the specified ADC channel using the previously set gain value.
         values[i] = self.adc.read_adc(i, gain=self.GAIN)
     return np.array(values).flatten()
