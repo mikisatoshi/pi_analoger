@@ -51,10 +51,10 @@ class PiAnaloger():
     data = np.hstack([data,[-1,0]])
     self.streamlist.append(data) 
     
-    # try:
-    #   self.detect_error01()
-    # except:
-    #   pass
+    try:
+      self.detect_error01()
+    except:
+      pass
 
   def __fin__(self):
     dt_now = datetime.datetime.now()
