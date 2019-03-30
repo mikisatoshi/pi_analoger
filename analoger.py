@@ -51,13 +51,12 @@ class PiAnaloger():
     elif self.mode == 2:
       data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data_1ch()])
 
-    data = np.hstack([data,[-1,0]])
-    self.streamlist.append(data) 
+    self.streamlist.append(np.hstack([data,[-1,0]])) 
     
-    try:
-      self.detect_error01()
-    except:
-      pass
+    # try:
+    #   self.detect_error01()
+    # except:
+    #   pass
 
   def __fin__(self):
     dt_now = datetime.datetime.now()
