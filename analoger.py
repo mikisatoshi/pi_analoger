@@ -7,10 +7,7 @@ try:
   import ADS1x15
 except:
   pass
-try:
-  import bme280_
-except:
-  pass
+
 try:
   import RPi.GPIO as GPIO
 except:
@@ -129,6 +126,7 @@ class Getstatus():
       return 1
     else:
       print("  Wait triger  ")
+      time.sleep(0.1)
       return 0
 
 
