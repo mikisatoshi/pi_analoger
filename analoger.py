@@ -48,6 +48,8 @@ class PiAnaloger():
       data = self.get_sample_data()
     elif self.mode == 1:
       data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data()])
+    elif self.mode == 2:
+      data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data_1ch()])
 
     data = np.hstack([data,[-1,0]])
     self.streamlist.append(data) 
@@ -67,11 +69,16 @@ class PiAnaloger():
     self.GAIN = 1
 
   def get_adc_data(self):
-    values = [0]*1
-    for i in range(1):
+    values = [0]*4
+    for i in range(4):
         # Read the specified ADC channel using the previously set gain value.
         values[i] = self.adc.read_adc(i, gain=self.GAIN)
     return np.array(values).flatten()
+
+
+  def get_adc_data_1ch(self):
+    return np.array(self.adc.read_adc(0, gain=self.GAIN)).flatten()
+
 
 
   def init_get_sample_data(self, filepath = "sample.csv"):
