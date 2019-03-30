@@ -44,10 +44,10 @@ class PiAnaloger():
     self.streamcounter += 1
     print(self.streamcounter)
 
-    if self.mode == 0:
-      data = self.get_sample_data()
-    elif self.mode == 1:
-      data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data()])
+    # if self.mode == 0:
+    #   data = self.get_sample_data()
+    # elif self.mode == 1:
+    #   data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data()])
     elif self.mode == 2:
       data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data_1ch()])
 
