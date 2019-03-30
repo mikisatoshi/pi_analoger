@@ -32,7 +32,7 @@ class PiAnaloger():
 
     self.mode = int(mode)
     self.streamlist    = []
-    self.streamcounter = 0
+    self.streamcounter = 1
 
     if self.mode == 0:
       self.init_get_sample_data()
@@ -46,7 +46,7 @@ class PiAnaloger():
     if self.mode == 0:
       data = self.get_sample_data()
     elif self.mode == 1:
-      data = np.hstack([[time.clock(),self.streamcounter],self.get_adc_data()])
+      data = np.hstack([[time.clock(),self.streamcounter], self.get_adc_data()])
 
     data = np.hstack([data,[-1,0]])
     self.streamlist.append(data) 
@@ -86,23 +86,24 @@ class PiAnaloger():
     data = self.sample.query("index ==" + str(int(self.counter_sample)))
     self.counter_sample += 1
 
-    return np.hstack([[time.clock(),self.streamcounter],np.array(data).flatten()])
+    return np.hstack([[time.clock(), self.streamcounter], np.array(data).flatten()])
 
 
   def detect_error01(self):
-    if self.streamcounter > self.p["streamsize"]:
-      pass
+    if self.streamcounter % 100 == 0:
+      self.streamlist[-1][-2] = 1001
+      self.streamlist[-1][-1] = 99
 
-    if self.p["mintimestep"] < self.streamlist[-1][0] - self.lateststeptime:
-      self.counter01 += 1
-      self.lateststeptime = self.streamlist[-1][0]
-      print(self.streamlist[-1])
+    # if self.p["mintimestep"] < self.streamlist[-1][0] - self.lateststeptime:
+    #   self.counter01 += 1
+    #   self.lateststeptime = self.streamlist[-1][0]
+    #   print(self.streamlist[-1])
 
-      emp_cov = EmpiricalCovariance().fit(np.array(self.streamlist)[- int(self.p["streamsize"] / 2 ) : , 2 : 2+self.p["ch01"]])
-      maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.p["ch01"]].reshape(1,-1))
-      print("maha = " + str(maha[0]))
+    #   emp_cov = EmpiricalCovariance().fit(np.array(self.streamlist)[- int(self.p["streamsize"] / 2 ) : , 2 : 2+self.p["ch01"]])
+    #   maha = emp_cov.mahalanobis(np.array(self.streamlist)[-1,2:2+self.p["ch01"]].reshape(1,-1))
+    #   print("maha = " + str(maha[0]))
 
-      self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
+    #   self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
 
 
  
