@@ -42,6 +42,7 @@ class PiAnaloger():
 
   def stream(self):
     self.streamcounter += 1
+    print(self.streamcounter)
 
     if self.mode == 0:
       data = self.get_sample_data()
@@ -106,9 +107,6 @@ class PiAnaloger():
     #   self.log01.append(np.hstack([self.streamlist[-1],maha[0]]))
 
 
- 
-
-
 class Getstatus():
   def __init__(self):
     GPIO.setmode(GPIO.BCM)
@@ -120,10 +118,8 @@ class Getstatus():
       return 1
     else:
       print("  Wait triger  ")
-      time.sleep(0.1)
+      time.sleep(0.2)
       return 0
-
-
 
 def main():
 
